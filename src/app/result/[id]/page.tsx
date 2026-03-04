@@ -1,49 +1,15 @@
 "use client";
 
-import { Leaf, AlertTriangle, Syringe, Pill, ChevronLeft, Droplets, ArrowDownRight, Wind } from "lucide-react";
+import { Leaf, AlertTriangle, Syringe, Pill, ChevronLeft, Droplets, ArrowDownRight, Wind, ShieldAlert, Activity, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
+import { getRecommendations } from "@/lib/recommendation";
 
 interface ResultPageProps {
     params: { id: string };
 }
-
-// Generate treatments dynamically based on severity / disease (a simple mock rule set)
-const generateTreatments = (disease: string, severity: string) => {
-    if (severity === "None" || disease.toLowerCase() === "healthy") {
-        return [
-            {
-                type: "Maintenance",
-                icon: Leaf,
-                action: "Continue current watering and fertilizer schedule.",
-                details: "Plant is healthy. Keep monitoring for any sudden changes."
-            }
-        ];
-    }
-
-    return [
-        {
-            type: "Chemical",
-            icon: Syringe,
-            action: `Apply appropriate fungicides for ${disease}.`,
-            details: "Spray every 7-10 days. Ensure full leaf coverage. Do not apply when temperature exceeds 30°C."
-        },
-        {
-            type: "Cultural",
-            icon: Wind,
-            action: "Improve air circulation and reduce humidity.",
-            details: "Prune lower leaves to allow better airflow. Avoid overhead irrigation to keep foliage dry."
-        },
-        {
-            type: "Organic",
-            icon: Droplets,
-            action: "Apply Copper Fungicide or Neem Oil.",
-            details: "Use as a preventative measure. Repeat application after heavy rainfall."
-        }
-    ];
-};
 
 export default function ResultPage({ params }: ResultPageProps) {
     const [result, setResult] = useState<any>(null);
@@ -102,7 +68,7 @@ export default function ResultPage({ params }: ResultPageProps) {
         return notFound();
     }
 
-    const treatments = generateTreatments(result.disease, result.severity);
+    const recommendations = getRecommendations(result.crop, result.disease, result.severity);
     const confidencePercentage = (result.confidence * 100).toFixed(1);
 
     return (
@@ -164,7 +130,7 @@ export default function ResultPage({ params }: ResultPageProps) {
                                     </div>
                                     <div className="text-red-400/80 text-xs uppercase font-semibold mb-1 relative z-10">Est. Yield Loss</div>
                                     <div className="text-2xl font-bold text-red-500 tracking-tight relative z-10">
-                                        {result.severity === 'High' ? '20-40%' : result.severity === 'Medium' ? '5-15%' : '0%'}
+                                        {recommendations.estimatedYieldLoss}
                                     </div>
                                 </div>
                             </div>
@@ -177,29 +143,64 @@ export default function ResultPage({ params }: ResultPageProps) {
                     <div className="glass-card p-8">
                         <div className="flex items-center gap-3 mb-8">
                             <div className="p-2 rounded-lg bg-brand-500/10 text-brand-400">
+                                <Activity className="w-6 h-6" />
+                            </div>
+                            <h2 className="text-xl font-bold text-white">Symptoms Analysis</h2>
+                        </div>
+                        <p className="text-zinc-300 leading-relaxed bg-dark-200 p-5 rounded-xl border border-white/5 hover:border-brand-500/20 transition-colors">
+                            {recommendations.symptoms}
+                        </p>
+                    </div>
+
+                    <div className="glass-card p-8">
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="p-2 rounded-lg bg-brand-500/10 text-brand-400">
                                 <Pill className="w-6 h-6" />
                             </div>
-                            <h2 className="text-xl font-bold text-white">Treatment Recommendations</h2>
+                            <h2 className="text-xl font-bold text-white">Treatment Plan</h2>
                         </div>
 
                         <div className="space-y-6">
-                            {treatments.map((treatment, idx) => (
-                                <div key={idx} className="flex gap-4 p-5 rounded-2xl bg-dark-200 border border-white/5 hover:border-brand-500/20 transition-colors group">
-                                    <div className="flex-shrink-0 mt-1">
-                                        <div className="w-10 h-10 rounded-full bg-dark-100 border border-white/10 flex items-center justify-center group-hover:border-brand-500/30 group-hover:bg-brand-500/5 transition-colors">
-                                            <treatment.icon className="w-5 h-5 text-zinc-400 group-hover:text-brand-400 transition-colors" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="text-sm font-semibold text-white tracking-wide">{treatment.type} Approach</span>
-                                        </div>
-                                        <p className="text-brand-100 font-medium mb-2">{treatment.action}</p>
-                                        <p className="text-zinc-400 text-sm leading-relaxed">{treatment.details}</p>
-                                    </div>
+                            <div className="p-5 rounded-2xl bg-dark-200 border border-white/5 group hover:border-brand-500/20 transition-colors">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Syringe className="w-5 h-5 text-brand-400" />
+                                    <h3 className="text-white font-semibold">Recommended Pesticide</h3>
                                 </div>
-                            ))}
+                                <p className="text-zinc-400 leading-relaxed">{recommendations.recommendedPesticide}</p>
+                            </div>
+
+                            <div className="p-5 rounded-2xl bg-dark-200 border border-white/5 group hover:border-brand-500/20 transition-colors">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <CheckCircle2 className="w-5 h-5 text-brand-400" />
+                                    <h3 className="text-white font-semibold">Action Steps</h3>
+                                </div>
+                                <ul className="space-y-3">
+                                    {recommendations.treatmentSteps.map((step, idx) => (
+                                        <li key={idx} className="flex gap-3 text-zinc-400 items-start">
+                                            <span className="text-brand-500 font-bold mt-0.5">{idx + 1}.</span>
+                                            <span className="leading-relaxed">{step}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
+                    </div>
+
+                    <div className="glass-card p-8">
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="p-2 rounded-lg bg-brand-500/10 text-brand-400">
+                                <ShieldAlert className="w-6 h-6" />
+                            </div>
+                            <h2 className="text-xl font-bold text-white">Prevention Tips</h2>
+                        </div>
+                        <ul className="space-y-3 p-5 rounded-2xl bg-dark-200 border border-white/5 hover:border-brand-500/20 transition-colors">
+                            {recommendations.preventionTips.map((tip, idx) => (
+                                <li key={idx} className="flex gap-3 text-zinc-400 items-start">
+                                    <div className="w-2 h-2 rounded-full bg-brand-500 flex-shrink-0 mt-2" />
+                                    <span className="leading-relaxed">{tip}</span>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
 
                     <div className="p-6 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex gap-4">
