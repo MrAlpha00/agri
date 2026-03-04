@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-100: #ecfdf5;
+  --color-brand-200: #d1fae5;
+  --color-brand-300: #a7f3d0;
+  --color-brand-400: #6ee7b7;
+  --color-brand-500: #34d399; /* emerald-400 */
+  --color-brand-600: #10b981; /* emerald-500 */
+  --color-brand-700: #059669; /* emerald-600 */
+  --color-brand-800: #047857;
+  --color-brand-900: #065f46;
+
+  --color-dark-50: #1c1c1e;
+  --color-dark-100: #121212;
+  --color-dark-200: #0a0a0a;
+
+  --font-sans: var(--font-inter);
+}
+
+@layer base {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ffffff;
+    --card: #121212;
+    --card-foreground: #ffffff;
+    --popover: #121212;
+    --popover-foreground: #ffffff;
+    --primary: #10b981;
+    --primary-foreground: #ffffff;
+    --secondary: #27272a;
+    --secondary-foreground: #ffffff;
+    --muted: #27272a;
+    --muted-foreground: #a1a1aa;
+    --accent: #10b981;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #27272a;
+    --input: #27272a;
+    --ring: #10b981;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-dark-50 via-dark-200 to-dark-200 min-h-screen text-slate-100 antialiased selection:bg-brand-600 selection:text-white;
+  }
+}
+
+/* Glassmorphism helpers */
+.glass {
+  @apply bg-dark-100/60 backdrop-blur-md border border-white/10;
+}
+.glass-card {
+  @apply bg-dark-100/40 backdrop-blur-lg border border-white/5 rounded-2xl shadow-xl;
+}
