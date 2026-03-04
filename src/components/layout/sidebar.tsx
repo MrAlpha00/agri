@@ -16,12 +16,12 @@ export function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <div className="w-64 border-r border-white/5 bg-dark-100 flex flex-col h-full flex-shrink-0 relative z-20">
+        <div className="w-64 border-r border-slate-200 bg-white flex flex-col h-full flex-shrink-0 relative z-20">
             <div className="p-6 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/20">
                     <Leaf className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">
                     AgriScan AI
                 </span>
             </div>
@@ -36,11 +36,11 @@ export function Sidebar() {
                             className={cn(
                                 "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group",
                                 isActive
-                                    ? "bg-brand-500/10 text-brand-400 font-medium border border-brand-500/20"
-                                    : "text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent"
+                                    ? "bg-brand-50 text-brand-600 font-medium border border-brand-100"
+                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent"
                             )}
                         >
-                            <item.icon className={cn("w-5 h-5 transition-colors", isActive ? "text-brand-400" : "text-zinc-500 group-hover:text-zinc-300")} />
+                            <item.icon className={cn("w-5 h-5 transition-colors", isActive ? "text-brand-500" : "text-slate-400 group-hover:text-slate-600")} />
                             {item.name}
                         </Link>
                     );
@@ -48,7 +48,7 @@ export function Sidebar() {
             </nav>
 
             <div className="p-4 mt-auto">
-                <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-all border border-transparent">
+                <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 transition-all border border-transparent">
                     <LogOut className="w-5 h-5" />
                     Logout
                 </button>
