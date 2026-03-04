@@ -130,8 +130,8 @@ export default function DatasetPage() {
         <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight mb-2">Analysis Dataset</h1>
-                    <p className="text-zinc-400">Comprehensive log of all crop health predictions.</p>
+                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">Analysis Dataset</h1>
+                    <p className="text-slate-500">Comprehensive log of all crop health predictions.</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -147,19 +147,19 @@ export default function DatasetPage() {
                 </div>
             </div>
 
-            <div className="glass-card flex flex-col h-[calc(100vh-250px)]">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col h-[calc(100vh-250px)] overflow-hidden">
                 {/* Table Filters Toolbar */}
-                <div className="p-4 border-b border-white/5 flex flex-wrap gap-4 items-center justify-between bg-dark-100/50">
+                <div className="p-4 border-b border-slate-200 flex flex-wrap gap-4 items-center justify-between bg-slate-50/50">
                     <div className="flex flex-wrap gap-4 items-center flex-1">
                         {/* Crop Filter */}
                         <div className="relative w-full max-w-[200px]">
-                            <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                             <input
                                 type="text"
                                 placeholder="Filter Crop..."
                                 value={searchCrop}
                                 onChange={(e) => setSearchCrop(e.target.value)}
-                                className="w-full bg-dark-200 border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-brand-500/50 transition-all"
+                                className="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
                             />
                         </div>
 
@@ -167,7 +167,7 @@ export default function DatasetPage() {
                         <select
                             value={filterDisease}
                             onChange={(e) => setFilterDisease(e.target.value)}
-                            className="bg-dark-200 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500/50 transition-all cursor-pointer"
+                            className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all cursor-pointer"
                         >
                             <option value="">All Diseases</option>
                             {uniqueDiseases.map(d => (
@@ -181,12 +181,12 @@ export default function DatasetPage() {
                                 type="date"
                                 value={filterDate}
                                 onChange={(e) => setFilterDate(e.target.value)}
-                                className="bg-dark-200 border border-white/10 rounded-lg px-3 py-2 text-sm text-zinc-300 focus:outline-none focus:border-brand-500/50 transition-all cursor-pointer"
+                                className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all cursor-pointer"
                             />
                             {filterDate && (
                                 <button
                                     onClick={() => setFilterDate('')}
-                                    className="absolute -right-2 -top-2 w-5 h-5 bg-zinc-700 text-white rounded-full flex items-center justify-center text-xs hover:bg-zinc-600"
+                                    className="absolute -right-2 -top-2 w-5 h-5 bg-slate-200 text-slate-600 rounded-full flex items-center justify-center text-xs hover:bg-slate-300 shadow-sm border border-white"
                                 >
                                     ×
                                 </button>
@@ -200,11 +200,11 @@ export default function DatasetPage() {
                     {loading ? (
                         <div className="h-full flex flex-col items-center justify-center p-12">
                             <div className="w-8 h-8 border-4 border-brand-500/30 border-t-brand-500 rounded-full animate-spin mb-4" />
-                            <p className="text-zinc-400">Loading dataset...</p>
+                            <p className="text-slate-500">Loading dataset...</p>
                         </div>
                     ) : (
                         <table className="w-full text-left text-sm whitespace-nowrap min-w-max">
-                            <thead className="bg-dark-200/80 text-zinc-400 border-b border-white/5 sticky top-0 z-10 backdrop-blur-md">
+                            <thead className="bg-slate-50/90 text-slate-500 border-b border-slate-200 sticky top-0 z-10 backdrop-blur-md">
                                 <tr>
                                     <th className="px-6 py-4 font-medium">SL No</th>
                                     <th className="px-6 py-4 font-medium">Crop Name</th>
@@ -220,12 +220,12 @@ export default function DatasetPage() {
                                     <th className="px-6 py-4 font-medium">Treatment</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/5">
+                            <tbody className="divide-y divide-slate-100">
                                 {filteredData.map((row) => (
-                                    <tr key={row.id} className="hover:bg-white/[0.04] transition-colors group">
-                                        <td className="px-6 py-4 text-zinc-500">#{row.slNo}</td>
-                                        <td className="px-6 py-4 font-semibold text-white">{row.crop}</td>
-                                        <td className="px-6 py-4 text-zinc-300">{row.acre} Ac</td>
+                                    <tr key={row.id} className="hover:bg-slate-50/80 transition-colors group">
+                                        <td className="px-6 py-4 text-slate-400">#{row.slNo}</td>
+                                        <td className="px-6 py-4 font-semibold text-slate-900">{row.crop}</td>
+                                        <td className="px-6 py-4 text-slate-600">{row.acre} Ac</td>
                                         <td className="px-6 py-4 text-center">
                                             {row.image_url ? (
                                                 <a href={row.image_url} target="_blank" rel="noopener noreferrer" className="inline-flex p-1.5 bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 rounded-md transition-colors" title="View Image">
@@ -235,11 +235,11 @@ export default function DatasetPage() {
                                                 <span className="text-zinc-600">-</span>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-zinc-400">{row.leafEdge}</td>
-                                        <td className="px-6 py-4 text-zinc-400">{row.leafColor}</td>
-                                        <td className="px-6 py-4 text-zinc-400">{row.texture}</td>
-                                        <td className="px-6 py-4 text-zinc-400 truncate max-w-[150px]" title={row.spots}>{row.spots}</td>
-                                        <td className="px-6 py-4 text-white">
+                                        <td className="px-6 py-4 text-slate-500">{row.leafEdge}</td>
+                                        <td className="px-6 py-4 text-slate-500">{row.leafColor}</td>
+                                        <td className="px-6 py-4 text-slate-500">{row.texture}</td>
+                                        <td className="px-6 py-4 text-slate-500 truncate max-w-[150px]" title={row.spots}>{row.spots}</td>
+                                        <td className="px-6 py-4 text-slate-900 font-medium">
                                             <span className="flex items-center gap-2">
                                                 {row.severity === "None" || row.disease.includes('Healthy') ? (
                                                     <span className="w-2 h-2 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
@@ -251,20 +251,20 @@ export default function DatasetPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${row.severity === 'High' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                                                    row.severity === 'Medium' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                                                        row.severity === 'Low' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                                                            'bg-brand-500/10 text-brand-400 border-brand-500/20'
+                                                row.severity === 'Medium' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                                    row.severity === 'Low' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                                                        'bg-brand-500/10 text-brand-400 border-brand-500/20'
                                                 }`}>
                                                 {row.severity}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-red-400 font-medium">{row.yieldLoss}</td>
-                                        <td className="px-6 py-4 text-zinc-300 truncate max-w-[200px]" title={row.treatment}>{row.treatment}</td>
+                                        <td className="px-6 py-4 text-slate-700 font-medium">{row.yieldLoss}</td>
+                                        <td className="px-6 py-4 text-slate-600 truncate max-w-[200px]" title={row.treatment}>{row.treatment}</td>
                                     </tr>
                                 ))}
                                 {filteredData.length === 0 && !loading && (
                                     <tr>
-                                        <td colSpan={12} className="px-6 py-20 text-center text-zinc-500">
+                                        <td colSpan={12} className="px-6 py-20 text-center text-slate-500">
                                             <div className="flex flex-col items-center justify-center">
                                                 <Search className="w-10 h-10 mb-3 opacity-20" />
                                                 <p>No records found matching your filters.</p>
