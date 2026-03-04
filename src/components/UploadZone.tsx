@@ -224,7 +224,18 @@ export function UploadZone() {
                                 )}
                                 <div className="relative z-10 w-full max-w-sm aspect-square rounded-2xl overflow-hidden border-2 border-brand-500/50 shadow-[0_0_40px_rgba(16,185,129,0.2)] mb-6">
                                     {previewUrl ? (
-                                        <img src={previewUrl} alt="Crop Leaf" className="w-full h-full object-cover" />
+                                        <>
+                                            <img src={previewUrl} alt="Crop Leaf" className="w-full h-full object-cover" />
+                                            {/* Scanning Animation Header */}
+                                            {isUploading && (
+                                                <motion.div
+                                                    initial={{ top: "-10%" }}
+                                                    animate={{ top: "110%" }}
+                                                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                                    className="absolute left-0 right-0 h-1 bg-brand-400 shadow-[0_0_20px_4px_rgba(16,185,129,0.8)] z-20"
+                                                />
+                                            )}
+                                        </>
                                     ) : (
                                         <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
                                             <ImageIcon className="w-12 h-12 text-zinc-600" />
@@ -257,16 +268,16 @@ export function UploadZone() {
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="glass-card p-8 flex flex-col"
+                className="glass-card p-6 sm:p-8 flex flex-col h-full"
             >
-                <div className="mb-8">
-                    <h3 className="text-2xl font-bold text-white mb-2">Scan Details</h3>
+                <div className="mb-6 sm:mb-8">
+                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Scan Details</h3>
                     <p className="text-sm text-zinc-400">Provide field metrics to help the AI calibrate its yield loss estimations accurately.</p>
                 </div>
 
                 <form onSubmit={handleUpload} className="space-y-6 flex-1 flex flex-col">
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Crop Name *</label>
                             <input
@@ -296,7 +307,7 @@ export function UploadZone() {
                     <div className="space-y-4 pt-4 border-t border-white/5">
                         <h4 className="text-sm font-medium text-white mb-4">Visual Characteristics (Optional context)</h4>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Leaf Edge</label>
                                 <select
@@ -355,17 +366,22 @@ export function UploadZone() {
                         </div>
                     </div>
 
-                    <div className="mt-auto pt-8">
-                        {error && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="mb-6 p-4 rounded-xl border border-red-500/20 bg-red-500/10 flex items-center gap-3 text-red-400 text-sm"
-                            >
-                                <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                                <p>{error}</p>
-                            </motion.div>
-                        )}
+                    <div className="mt-auto pt-6 sm:pt-8 w-full">
+                        <AnimatePresence>
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0, y: -10 }}
+                                    animate={{ opacity: 1, height: "auto", y: 0 }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="overflow-hidden w-full"
+                                >
+                                    <div className="mb-4 p-4 rounded-xl border border-red-500/20 bg-red-500/10 flex items-center gap-3 text-red-400 text-sm">
+                                        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                                        <p>{error}</p>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
                         <button
                             type="submit"
@@ -375,7 +391,7 @@ export function UploadZone() {
                             {isUploading ? (
                                 <>
                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    Processing AI Scan...
+                                    Analyzing Deep Neural Network...
                                 </>
                             ) : (
                                 <>
