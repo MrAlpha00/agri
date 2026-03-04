@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
     try {
-        const { password } = await request.json();
+        const { idToken } = await request.json();
 
-        // Hardcoded passcode for MVP admin access
-        if (password === 'admin123') {
+        // Trust client-side Firebase auth success for MVP
+        if (idToken) {
             const response = NextResponse.json({ success: true });
 
             // Set an auth cookie that matches what middleware expects
