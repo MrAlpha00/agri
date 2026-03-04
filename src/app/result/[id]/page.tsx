@@ -1,24 +1,33 @@
+"use client";
+
 import { Leaf, AlertTriangle, Syringe, Pill, ChevronLeft, Droplets, ArrowDownRight, Wind } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { notFound } from "next/navigation";
 
 interface ResultPageProps {
     params: { id: string };
 }
 
-// Since we don't have a real DB yet, let's inject some realistic mock data
-const mockResult = {
-    id: "abc-123",
-    diseaseName: "Early Blight",
-    confidence: 94.2,
-    pathogen: "Alternaria solani",
-    severity: "High",
-    affectedArea: "32%",
-    yieldLoss: "15-20%",
-    treatments: [
+// Generate treatments dynamically based on severity / disease (a simple mock rule set)
+const generateTreatments = (disease: string, severity: string) => {
+    if (severity === "None" || disease.toLowerCase() === "healthy") {
+        return [
+            {
+                type: "Maintenance",
+                icon: Leaf,
+                action: "Continue current watering and fertilizer schedule.",
+                details: "Plant is healthy. Keep monitoring for any sudden changes."
+            }
+        ];
+    }
+
+    return [
         {
             type: "Chemical",
             icon: Syringe,
-            action: "Apply Chlorothalonil or Mancozeb based fungicides.",
+            action: `Apply appropriate fungicides for ${disease}.`,
             details: "Spray every 7-10 days. Ensure full leaf coverage. Do not apply when temperature exceeds 30°C."
         },
         {
@@ -33,11 +42,68 @@ const mockResult = {
             action: "Apply Copper Fungicide or Neem Oil.",
             details: "Use as a preventative measure. Repeat application after heavy rainfall."
         }
-    ]
+    ];
 };
 
 export default function ResultPage({ params }: ResultPageProps) {
-    // In a real app, we would fetch data based on params.id
+    const [result, setResult] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchResult() {
+            try {
+                // If ID is simple string (mock generation locally without DB access)
+                if (params.id.length < 15) {
+                    console.log("Using local mock display because ID is short:", params.id);
+                    setResult({
+                        id: params.id,
+                        disease: "Sample Disease (Mock)",
+                        confidence: 0.95,
+                        severity: "High",
+                        crop: "Tomato",
+                        image_url: null,
+                    });
+                    setLoading(false);
+                    return;
+                }
+
+                const { data, error } = await supabase
+                    .from('predictions')
+                    .select('*')
+                    .eq('id', params.id)
+                    .single();
+
+                if (error || !data) {
+                    console.error("Error fetching prediction:", error);
+                    notFound();
+                } else {
+                    setResult(data);
+                }
+            } catch (err) {
+                console.error("Failed to load result", err);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchResult();
+    }, [params.id]);
+
+    if (loading) {
+        return (
+            <div className="max-w-6xl mx-auto py-20 flex flex-col items-center justify-center">
+                <div className="w-10 h-10 border-4 border-brand-500/30 border-t-brand-500 rounded-full animate-spin mb-4" />
+                <p className="text-zinc-400">Loading analysis results...</p>
+            </div>
+        );
+    }
+
+    if (!result) {
+        return notFound();
+    }
+
+    const treatments = generateTreatments(result.disease, result.severity);
+    const confidencePercentage = (result.confidence * 100).toFixed(1);
 
     return (
         <div className="max-w-6xl mx-auto py-8">
@@ -47,7 +113,7 @@ export default function ResultPage({ params }: ResultPageProps) {
                 </Link>
                 <div>
                     <h1 className="text-3xl font-bold text-white tracking-tight">Analysis Result</h1>
-                    <p className="text-zinc-400 text-sm mt-1">Scan ID: {params.id}</p>
+                    <p className="text-zinc-400 text-sm mt-1">Scan ID: {result.id.substring(0, 8)}... | Crop: {result.crop}</p>
                 </div>
             </div>
 
@@ -57,11 +123,14 @@ export default function ResultPage({ params }: ResultPageProps) {
                 <div className="lg:col-span-1 space-y-6">
                     <div className="glass-card overflow-hidden">
                         <div className="aspect-[4/3] bg-dark-200 relative flex items-center justify-center group overflow-hidden border-b border-white/5">
-                            {/* Mock Image Placeholder */}
-                            <div className="absolute inset-0 bg-zinc-900 flex items-center justify-center">
-                                <div className="w-32 h-32 rounded-full bg-brand-500/10 flex items-center justify-center blur-2xl absolute" />
-                                <Leaf className="w-16 h-16 text-brand-400/50" />
-                            </div>
+                            {result.image_url ? (
+                                <img src={result.image_url} alt="Crop Scan" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="absolute inset-0 bg-zinc-900 flex items-center justify-center">
+                                    <div className="w-32 h-32 rounded-full bg-brand-500/10 flex items-center justify-center blur-2xl absolute" />
+                                    <Leaf className="w-16 h-16 text-brand-400/50" />
+                                </div>
+                            )}
 
                             {/* Scan overlay scanner effect */}
                             <div className="absolute top-0 left-0 w-full h-1 bg-brand-500/50 shadow-[0_0_20px_rgba(16,185,129,0.8)] animate-[scan_3s_ease-in-out_infinite]" />
@@ -69,28 +138,34 @@ export default function ResultPage({ params }: ResultPageProps) {
 
                         <div className="p-6">
                             <div className="flex items-center justify-between mb-4">
-                                <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-semibold border border-red-500/20 uppercase tracking-wide">
-                                    {mockResult.severity} Severity
+                                <span className={`px-3 py-1 rounded-full text-xs font-semibold border uppercase tracking-wide
+                                    ${result.severity === 'High' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                                        result.severity === 'Medium' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                            result.severity === 'None' ? 'bg-brand-500/10 text-brand-400 border-brand-500/20' :
+                                                'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'}`}>
+                                    {result.severity} Severity
                                 </span>
                                 <span className="text-zinc-400 text-sm font-medium">
-                                    {mockResult.confidence}% Confidence
+                                    {result.confidence > 1 ? result.confidence : confidencePercentage}% Confidence
                                 </span>
                             </div>
 
-                            <h2 className="text-2xl font-bold text-white mb-1">{mockResult.diseaseName}</h2>
-                            <p className="text-zinc-400 text-sm mb-6 pb-6 border-b border-white/5">Pathogen: <span className="text-zinc-300">{mockResult.pathogen}</span></p>
+                            <h2 className="text-2xl font-bold text-white mb-1">{result.disease}</h2>
+                            <p className="text-zinc-400 text-sm mb-6 pb-6 border-b border-white/5">Crop identified: <span className="text-zinc-300">{result.crop}</span></p>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-dark-200 rounded-xl p-4 border border-white/5">
-                                    <div className="text-zinc-500 text-xs uppercase font-semibold mb-1">Affected Area</div>
-                                    <div className="text-2xl font-bold text-white tracking-tight">{mockResult.affectedArea}</div>
+                                    <div className="text-zinc-500 text-xs uppercase font-semibold mb-1">Status</div>
+                                    <div className="text-xl font-bold text-white tracking-tight">{result.severity === 'None' ? 'Healthy' : 'Infected'}</div>
                                 </div>
                                 <div className="bg-red-500/5 rounded-xl p-4 border border-red-500/10 relative overflow-hidden">
                                     <div className="absolute -right-2 -bottom-2 text-red-500/20">
                                         <ArrowDownRight className="w-16 h-16" />
                                     </div>
                                     <div className="text-red-400/80 text-xs uppercase font-semibold mb-1 relative z-10">Est. Yield Loss</div>
-                                    <div className="text-2xl font-bold text-red-500 tracking-tight relative z-10">{mockResult.yieldLoss}</div>
+                                    <div className="text-2xl font-bold text-red-500 tracking-tight relative z-10">
+                                        {result.severity === 'High' ? '20-40%' : result.severity === 'Medium' ? '5-15%' : '0%'}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +183,7 @@ export default function ResultPage({ params }: ResultPageProps) {
                         </div>
 
                         <div className="space-y-6">
-                            {mockResult.treatments.map((treatment, idx) => (
+                            {treatments.map((treatment, idx) => (
                                 <div key={idx} className="flex gap-4 p-5 rounded-2xl bg-dark-200 border border-white/5 hover:border-brand-500/20 transition-colors group">
                                     <div className="flex-shrink-0 mt-1">
                                         <div className="w-10 h-10 rounded-full bg-dark-100 border border-white/10 flex items-center justify-center group-hover:border-brand-500/30 group-hover:bg-brand-500/5 transition-colors">
