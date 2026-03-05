@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",
+    "@tensorflow/tfjs": "^4.22.0",
     "clsx": "^2.1.1",
     "firebase": "^12.10.0",
     "framer-motion": "^12.35.0",
