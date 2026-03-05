@@ -2,3 +2,26 @@
 > agri@0.1.0 build
 > next build
 
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\sm468\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\sm468\OneDrive\Desktop\m projects\agri\package-lock.json
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+Error: Cannot apply unknown utility class `shadow-[0_8px_30px_rgb(0,`
+    [2m[at onInvalidCandidate (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:21:1511)][0m
+    [2m[at Ee (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:16:36740)][0m
+    [2m[at C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:21:355][0m
+    [2m[at Pr (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:3:1733)][0m
+    [2m[at _ (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:3:1377)][0m
+    [2m[at Te (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:21:172)][0m
+    [2m[at pn (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:38:294)][0m
+    [2m[at async dn (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:38:631)][0m
+    [2m[at async Xr (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\@tailwindcss\node\dist\index.js:10:3417)][0m
+    [2m[at async N (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\@tailwindcss\postcss\dist\index.js:10:3979)][0m
