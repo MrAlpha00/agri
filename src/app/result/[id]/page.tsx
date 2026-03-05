@@ -2,16 +2,16 @@
 
 import { Leaf, AlertTriangle, Syringe, Pill, ChevronLeft, Droplets, ArrowDownRight, Wind, ShieldAlert, Activity, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { notFound } from "next/navigation";
 import { getRecommendations } from "@/lib/recommendation";
 
 interface ResultPageProps {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 export default function ResultPage({ params }: ResultPageProps) {
+    const { id } = use(params);
     const [result, setResult] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
@@ -19,10 +19,10 @@ export default function ResultPage({ params }: ResultPageProps) {
         async function fetchResult() {
             try {
                 // If ID is simple string (mock generation locally without DB access)
-                if (params.id.length < 15) {
-                    console.log("Using local mock display because ID is short:", params.id);
+                if (id.length < 15) {
+                    console.log("Using local mock display because ID is short:", id);
                     setResult({
-                        id: params.id,
+                        id: id,
                         disease: "Sample Disease (Mock)",
                         confidence: 0.95,
                         severity: "High",
@@ -36,24 +36,25 @@ export default function ResultPage({ params }: ResultPageProps) {
                 const { data, error } = await supabase
                     .from('predictions')
                     .select('*')
-                    .eq('id', params.id)
+                    .eq('prediction_id', id)
                     .single();
 
                 if (error || !data) {
                     console.error("Error fetching prediction:", error);
-                    notFound();
+                    setResult(null);
                 } else {
                     setResult(data);
                 }
             } catch (err) {
                 console.error("Failed to load result", err);
+                setResult(null);
             } finally {
                 setLoading(false);
             }
         }
 
         fetchResult();
-    }, [params.id]);
+    }, [id]);
 
     if (loading) {
         return (
@@ -65,7 +66,16 @@ export default function ResultPage({ params }: ResultPageProps) {
     }
 
     if (!result) {
-        return notFound();
+        return (
+            <div className="max-w-6xl mx-auto py-32 flex flex-col items-center justify-center">
+                <AlertTriangle className="w-16 h-16 text-amber-500 mb-6" />
+                <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">Result not found</h1>
+                <p className="text-slate-500 mb-8">We couldn't find the requested scan analysis.</p>
+                <Link href="/dashboard" className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-medium transition-colors">
+                    Return to Dashboard
+                </Link>
+            </div>
+        );
     }
 
     const recommendations = getRecommendations(result.crop, result.disease, result.severity);
