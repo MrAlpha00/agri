@@ -1,0 +1,49 @@
+
+> agri@0.1.0 build
+> next build
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\sm468\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\sm468\OneDrive\Desktop\m projects\agri\package-lock.json
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+Error: Cannot apply unknown utility class `bg-[radial-gradient(ellipse_at_top_right,`
+    [2m[at onInvalidCandidate (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:21:1511)][0m
+    [2m[at Ee (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:16:36740)][0m
+    [2m[at C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:21:355][0m
+    [2m[at Pr (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:3:1733)][0m
+    [2m[at _ (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:3:1377)][0m
+    [2m[at Te (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:21:172)][0m
+    [2m[at pn (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:38:294)][0m
+    [2m[at async dn (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:38:631)][0m
+    [2m[at async Xr (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\@tailwindcss\node\dist\index.js:10:3417)][0m
+    [2m[at async N (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\@tailwindcss\postcss\dist\index.js:10:3979)][0m
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./OneDrive/Desktop/m projects/agri/src/app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\sm468\OneDrive\Desktop\m projects\agri\src\app\globals.css:1:1: Cannot apply unknown utility class `bg-[radial-gradient(ellipse_at_top_right,`
+    at Input.error (OneDrive/Desktop/m projects/agri/node_modules/postcss/lib/input.js:135:16) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\38a32_87dad713._.js:4651:22]
+    at Root.error (OneDrive/Desktop/m projects/agri/node_modules/postcss/lib/node.js:146:32) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\38a32_87dad713._.js:928:38]
+    [at Object.Once (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\@tailwindcss\postcss\dist\index.js:10:6913)]
+    at async LazyResult.runAsync (OneDrive/Desktop/m projects/agri/node_modules/postcss/lib/lazy-result.js:293:11) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\38a32_87dad713._.js:6214:21]
+    at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\[root-of-the-server]__fc5b6f8a._.js:146:36]
+    at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\[root-of-the-server]__01b89d14._.js:443:31]
+
+Import trace:
+  Client Component Browser:
+    ./OneDrive/Desktop/m projects/agri/src/app/globals.css [Client Component Browser]
+    ./OneDrive/Desktop/m projects/agri/src/app/layout.tsx [Client Component Browser]
+    ./OneDrive/Desktop/m projects/agri/src/app/layout.tsx [Server Component]
+
+
+    at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\[root-of-the-server]__fc5b6f8a._.js:146:36])
+    at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\[root-of-the-server]__01b89d14._.js:443:31])
