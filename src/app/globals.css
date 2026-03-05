@@ -76,7 +76,8 @@
   }
 
   body {
-    @apply bg-background text-foreground bg-[radial-gradient(ellipse_at_top_right, _var(--tw-gradient-stops))] from-white via-brand-100/50 to-brand-200/30 min-h-screen antialiased selection:bg-brand-500 selection:text-white;
+    @apply bg-background text-foreground from-white via-brand-100/50 to-brand-200/30 min-h-screen antialiased selection:bg-brand-500 selection:text-white;
+    background-image: radial-gradient(ellipse at top right, var(--tw-gradient-stops));
   }
 }
 
