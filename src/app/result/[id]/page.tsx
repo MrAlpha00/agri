@@ -18,20 +18,7 @@ export default function ResultPage({ params }: ResultPageProps) {
     useEffect(() => {
         async function fetchResult() {
             try {
-                // If ID is simple string (mock generation locally without DB access)
-                if (id.length < 15) {
-                    console.log("Using local mock display because ID is short:", id);
-                    setResult({
-                        id: id,
-                        disease: "Sample Disease (Mock)",
-                        confidence: 0.95,
-                        severity: "High",
-                        crop: "Tomato",
-                        image_url: null,
-                    });
-                    setLoading(false);
-                    return;
-                }
+
 
                 const { data, error } = await supabase
                     .from('predictions')

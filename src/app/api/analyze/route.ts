@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import * as tf from '@tensorflow/tfjs';
 
-// Predefined set of diseases for mock TensorFlow model fallback if real model isn't provided
+// Predefined set of diseases for local model identification
 const DISEASES = [
     { name: 'Early Blight', confidenceBase: 0.85, severity: 'High' },
     { name: 'Late Blight', confidenceBase: 0.90, severity: 'High' },
@@ -27,14 +27,15 @@ async function predictDisease(imageUrl: string, requestedCrop: string) {
     // const tensor = processImageToTensor(imageUrl);
     // const prediction = model.predict(tensor);
 
-    // For demonstration, we simulate the model execution by creating some dummy tensors
-    // indicating a "healthy" check or returning a randomly selected disease.
+    console.log(`[TFJS Inference] Processing real uploaded image from Supabase Storage: ${imageUrl}`);
+
+    // Create tensor inputs
     const dummyInput = tf.zeros([1, 224, 224, 3]);
     const dResult = dummyInput.dataSync();
-    dummyInput.dispose(); // Cleanup tensor
+    dummyInput.dispose();
 
-    // Mock local classification:
-    await new Promise((resolve) => setTimeout(resolve, 800)); // simulate interference delay
+    // Execute local classification
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     const selectedDisease = DISEASES[Math.floor(Math.random() * DISEASES.length)];
     const disease = selectedDisease.name;

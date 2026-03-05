@@ -110,16 +110,13 @@ export function UploadZone() {
                 .from('crop-images')
                 .upload(filePath, file);
 
-            // We expect an upload error here in a local mock scenario since credentials aren't real yet.
-            // But in a real scenario, we'll continue if successful.
-            let publicUrl = "https://mock-image-url.com/mock.jpg"; // Fallback for mock execution
-
-            if (!uploadError && data) {
-                const { data: { publicUrl: url } } = supabase.storage
-                    .from('crop-images')
-                    .getPublicUrl(filePath);
-                publicUrl = url;
+            if (uploadError || !data) {
+                throw new Error("Failed to upload image to storage. " + uploadError?.message);
             }
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('crop-images')
+                .getPublicUrl(filePath);
 
             // 2. Call our AI API endpoint with metadata
             const payload = {
