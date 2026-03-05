@@ -25,3 +25,25 @@ Error: Cannot apply unknown utility class `shadow-[0_8px_30px_rgb(0,`
     [2m[at async dn (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\tailwindcss\dist\lib.js:38:631)][0m
     [2m[at async Xr (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\@tailwindcss\node\dist\index.js:10:3417)][0m
     [2m[at async N (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\@tailwindcss\postcss\dist\index.js:10:3979)][0m
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./OneDrive/Desktop/m projects/agri/src/app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\sm468\OneDrive\Desktop\m projects\agri\src\app\globals.css:1:1: Cannot apply unknown utility class `shadow-[0_8px_30px_rgb(0,`
+    at Input.error (OneDrive/Desktop/m projects/agri/node_modules/postcss/lib/input.js:135:16) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\38a32_87dad713._.js:4651:22]
+    at Root.error (OneDrive/Desktop/m projects/agri/node_modules/postcss/lib/node.js:146:32) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\38a32_87dad713._.js:928:38]
+    [at Object.Once (C:\Users\sm468\OneDrive\Desktop\m projects\agri\node_modules\@tailwindcss\postcss\dist\index.js:10:6913)]
+    at async LazyResult.runAsync (OneDrive/Desktop/m projects/agri/node_modules/postcss/lib/lazy-result.js:293:11) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\38a32_87dad713._.js:6214:21]
+    at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\[root-of-the-server]__fc5b6f8a._.js:146:36]
+    at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\[root-of-the-server]__01b89d14._.js:443:31]
+
+Import trace:
+  Client Component Browser:
+    ./OneDrive/Desktop/m projects/agri/src/app/globals.css [Client Component Browser]
+    ./OneDrive/Desktop/m projects/agri/src/app/layout.tsx [Client Component Browser]
+    ./OneDrive/Desktop/m projects/agri/src/app/layout.tsx [Server Component]
+
+
+    at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\[root-of-the-server]__fc5b6f8a._.js:146:36])
+    at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23) [C:\Users\sm468\OneDrive\Desktop\m projects\agri\.next\build\chunks\[root-of-the-server]__01b89d14._.js:443:31])
