@@ -89,7 +89,8 @@ export async function POST(request: Request) {
             crop: prediction.crop,
             disease: prediction.disease,
             confidence: prediction.confidence,
-            severity: prediction.severity
+            severity: prediction.severity,
+            imageUrl: imageUrl || null
         };
 
         return NextResponse.json(resultPayload);

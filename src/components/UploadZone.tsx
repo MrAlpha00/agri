@@ -111,6 +111,12 @@ export function UploadZone() {
                 .upload(filePath, file);
 
             if (uploadError || !data) {
+                if (uploadError?.message?.includes("not found") || uploadError?.message?.includes("Bucket not found")) {
+                    throw new Error("Storage bucket 'crop-images' not found. Please create it in your Supabase dashboard and make it public.");
+                }
+                if (uploadError?.message?.includes("row-level security")) {
+                    throw new Error("Upload blocked by Row Level Security (RLS) policies. Please allow public uploads for 'crop-images'.");
+                }
                 throw new Error("Failed to upload image to storage. " + uploadError?.message);
             }
 
