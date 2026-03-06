@@ -1,5 +1,5 @@
 import { UploadZone } from "@/components/UploadZone";
-import { Leaf, ShieldAlert, BadgeCheck } from "lucide-react";
+import { Leaf, ShieldAlert, BadgeCheck, Zap } from "lucide-react";
 
 export default function Home() {
   return (
@@ -25,34 +25,45 @@ export default function Home() {
       <div className="max-w-5xl mx-auto px-6 relative z-10 pb-16">
         <UploadZone />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
-          {[
-            {
-              icon: ShieldAlert,
-              title: "Early Detection",
-              desc: "Identify potential threats before they spread and destroy your yield."
-            },
-            {
-              icon: BadgeCheck,
-              title: "High Accuracy",
-              desc: "Our model is trained on millions of images for precise disease identification."
-            },
-            {
-              icon: Leaf,
-              title: "Actionable Insights",
-              desc: "Get immediate treatment recommendations including chemical and organic solutions."
-            }
-          ].map((feature, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col items-start gap-4 hover:border-brand-300 hover:shadow-md transition-all duration-300 group">
-              <div className="w-12 h-12 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <feature.icon className="w-6 h-6 text-brand-600" />
+        <div className="mt-32">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Platform Capabilities</h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">Everything you need to monitor and protect your crops effectively.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: ShieldAlert,
+                title: "Early Detection",
+                desc: "Identify potential threats before they spread and destroy your yield."
+              },
+              {
+                icon: BadgeCheck,
+                title: "High Accuracy",
+                desc: "Our model is trained on millions of images for precise disease identification."
+              },
+              {
+                icon: Leaf,
+                title: "Actionable Insights",
+                desc: "Get immediate treatment recommendations including chemical and organic solutions."
+              },
+              {
+                icon: Zap,
+                title: "Lightning Fast",
+                desc: "Get analysis results in seconds to make quick critical decisions for your farm."
+              }
+            ].map((feature, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col items-start gap-4 hover:border-brand-300 hover:shadow-md transition-all duration-300 group">
+                <div className="w-12 h-12 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <feature.icon className="w-6 h-6 text-brand-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">{feature.title}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed">{feature.desc}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">{feature.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{feature.desc}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
