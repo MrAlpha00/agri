@@ -11,9 +11,9 @@ export function FarmerAssistant() {
     const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
         api: '/api/chat',
         initialMessages: [
-            { id: '1', role: 'assistant', content: "Hello! I'm your AI Agronomist. Ask me about crop diseases, fertilizers, or yield optimization." }
+            { id: '1', role: 'assistant', content: "Hello! I'm your AI Agronomist. Ask me about crop diseases, fertilizers, or yield optimization." } as any
         ]
-    });
+    } as any) as any;
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -85,7 +85,7 @@ export function FarmerAssistant() {
             {!isMinimized && (
                 <>
                     <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 relative">
-                        {messages.map((m) => (
+                        {messages.map((m: any) => (
                             <div key={m.id} className={cn("flex w-full", m.role === 'user' ? "justify-end" : "justify-start")}>
                                 <div className={cn(
                                     "flex max-w-[85%] gap-2 shadow-sm",
