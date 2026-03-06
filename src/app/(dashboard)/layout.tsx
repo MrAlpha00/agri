@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
+import { FarmerAssistant } from "@/components/chat/FarmerAssistant";
 
 export default function DashboardLayout({
     children,
@@ -12,7 +13,7 @@ export default function DashboardLayout({
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     return (
-        <div className="flex h-screen overflow-hidden bg-background">
+        <div className="flex h-screen overflow-hidden bg-background relative">
             {/* Desktop persistent sidebar */}
             <div className="hidden md:block h-full flex-shrink-0 z-20">
                 <Sidebar />
@@ -31,10 +32,13 @@ export default function DashboardLayout({
                 {/* Background ambient glow */}
                 <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-brand-600/5 blur-[120px] pointer-events-none" />
                 <Header onMenuClick={() => setIsSidebarOpen(true)} />
-                <main className="flex-1 overflow-y-auto p-4 md:p-8 z-10 w-full">
+                <main className="flex-1 overflow-y-auto p-4 md:p-8 z-10 w-full relative">
                     {children}
                 </main>
             </div>
+
+            {/* Global AI Assistant accessible from all dashboard views */}
+            <FarmerAssistant />
         </div>
     );
 }
