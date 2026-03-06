@@ -170,10 +170,10 @@ export function UploadZone() {
                     onDrop={handleDrop}
                     onClick={() => !file && fileInputRef.current?.click()}
                     className={cn(
-                        "relative w-full rounded-xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center flex-1 min-h-[400px] overflow-hidden bg-white/50",
+                        "relative w-full rounded-2xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center flex-1 min-h-[400px] overflow-hidden bg-white shadow-sm hover:shadow-md",
                         isDragging
-                            ? "border-brand-500 bg-brand-50 p-4"
-                            : "border-slate-200 hover:border-brand-300 hover:bg-slate-50 p-4",
+                            ? "border-brand-500 bg-brand-50 p-4 ring-4 ring-brand-500/20"
+                            : "border-slate-200 hover:border-brand-400 p-4",
                         !file && "cursor-pointer"
                     )}
                 >
@@ -204,7 +204,7 @@ export function UploadZone() {
                                 </p>
                                 <button
                                     type="button"
-                                    className="px-6 py-2.5 rounded-full bg-brand-50 text-brand-600 font-medium hover:bg-brand-100 transition-all text-sm flex items-center gap-2 border border-brand-200"
+                                    className="px-6 py-2.5 rounded-full bg-brand-50 text-brand-600 font-medium hover:bg-brand-100 hover:shadow-sm transition-all text-sm flex items-center gap-2 border border-brand-200"
                                 >
                                     <UploadCloud className="w-4 h-4" />
                                     Select File
@@ -389,7 +389,7 @@ export function UploadZone() {
                         <button
                             type="submit"
                             disabled={isUploading || !file}
-                            className="w-full py-4 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-lg shadow-[0_8px_20px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_25px_rgba(16,185,129,0.35)] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:hover:shadow-none"
+                            className="w-full py-4 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold text-lg shadow-[0_4px_14px_0_rgb(22,163,74,0.39)] hover:shadow-[0_6px_20px_rgba(22,163,74,0.23)] hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed transform"
                         >
                             {isUploading ? (
                                 <>

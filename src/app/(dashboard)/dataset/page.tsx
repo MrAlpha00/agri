@@ -139,7 +139,7 @@ export default function DatasetPage() {
                         type="button"
                         onClick={exportToExcel}
                         disabled={filteredData.length === 0}
-                        className="flex items-center gap-2 px-4 py-2 bg-brand-500 hover:bg-brand-600 disabled:bg-brand-500/50 disabled:cursor-not-allowed text-white rounded-lg font-medium shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all text-sm"
+                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 disabled:from-brand-500/50 disabled:to-brand-600/50 disabled:cursor-not-allowed text-white rounded-lg font-medium shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-sm transform"
                     >
                         <Download className="w-4 h-4" />
                         Export to Excel

@@ -58,7 +58,7 @@ export default function ResultPage({ params }: ResultPageProps) {
                 <AlertTriangle className="w-16 h-16 text-amber-500 mb-6" />
                 <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">Result not found</h1>
                 <p className="text-slate-500 mb-8">We couldn't find the requested scan analysis.</p>
-                <Link href="/dashboard" className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-medium transition-colors">
+                <Link href="/dashboard" className="px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white rounded-xl font-medium shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 transform">
                     Return to Dashboard
                 </Link>
             </div>
