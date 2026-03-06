@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Leaf, TrendingUp, AlertTriangle, ScanLine, Activity } from "lucide-react";
+import dynamic from "next/dynamic";
+import { Leaf, TrendingUp, AlertTriangle, ScanLine, Activity, Map as MapIcon, CloudRain } from "lucide-react";
 import {
     Area,
     AreaChart,
@@ -19,6 +20,18 @@ import {
     Line,
     Legend
 } from "recharts";
+import WeatherWidget from "@/components/dashboard/WeatherWidget";
+
+// Leaflet requires client-side only rendering due to window object references
+const SatelliteMap = dynamic(() => import("@/components/dashboard/SatelliteMap"), {
+    ssr: false,
+    loading: () => (
+        <div className="glass-card p-6 border-slate-200 bg-white h-[400px] flex flex-col justify-center items-center">
+            <div className="w-8 h-8 border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin mb-2" />
+            <p className="text-slate-500 text-sm">Loading Satellite Data...</p>
+        </div>
+    )
+});
 
 export default function Dashboard() {
     const [stats, setStats] = useState<any>(null);
@@ -45,15 +58,7 @@ export default function Dashboard() {
         return (
             <div className="max-w-7xl mx-auto py-20 flex flex-col items-center justify-center min-h-[50vh]">
                 <div className="w-10 h-10 border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin mb-4" />
-                <p className="text-slate-500">Aggregating analytics data...</p>
-            </div>
-        );
-    }
-
-    if (!stats) {
-        return (
-            <div className="max-w-7xl mx-auto py-20 text-center text-slate-500">
-                Failed to load analytics data.
+                <p className="text-slate-500">Aggregating platform analytics...</p>
             </div>
         );
     }
@@ -63,23 +68,37 @@ export default function Dashboard() {
     const totalScans = stats?.totalAnalyzed || 0;
     const healthyPercent = totalScans > 0 ? Math.round((stats.healthyCount / totalScans) * 100) : 0;
     const diseasePercent = totalScans > 0 ? Math.round((stats.diseasedCount / totalScans) * 100) : 0;
+
     return (
-        <div className="max-w-7xl mx-auto space-y-8">
+        <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500 pb-20">
             <div>
-                <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">Analytics Overview</h1>
-                <p className="text-slate-500">Track crop health trends and AI scanning performance.</p>
+                <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">Platform Overview</h1>
+                <p className="text-slate-500">Comprehensive AI, geospatial, and weather intelligence for your farm.</p>
             </div>
 
+            {/* Top row: Weather & Map */}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div className="xl:col-span-1 h-full min-h-[400px]">
+                    <WeatherWidget />
+                </div>
+                <div className="xl:col-span-2 h-full min-h-[400px]">
+                    <SatelliteMap />
+                </div>
+            </div>
+
+            <hr className="border-slate-200/60 my-6" />
+
             {/* Stats row */}
+            <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-4">Crop Health Diagnostics</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { title: "Total Scans", value: totalScans.toString(), trend: "Active", icon: ScanLine, color: "text-brand-500", bg: "bg-brand-50" },
+                    { title: "Total AI Scans", value: totalScans.toString(), trend: "Active", icon: ScanLine, color: "text-brand-500", bg: "bg-brand-50" },
                     { title: "Healthy Crops", value: `${healthyPercent}%`, trend: `${stats.healthyCount} scans`, icon: Leaf, color: "text-brand-500", bg: "bg-brand-50" },
                     { title: "Disease Detected", value: `${diseasePercent}%`, trend: `${stats.diseasedCount} scans`, icon: AlertTriangle, color: "text-amber-500", bg: "bg-amber-50" },
                     { title: "Crop Types", value: stats?.cropInfection?.length || 0, trend: "Monitored", icon: Activity, color: "text-blue-500", bg: "bg-blue-50" }
                 ].map((stat, i) => (
-                    <div key={i} className="glass-card p-6 border-slate-200 bg-white relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4 opacity-[0.03]">
+                    <div key={i} className="glass-card p-6 border-slate-200 bg-white relative overflow-hidden transition-all hover:shadow-md hover:border-brand-200 group">
+                        <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all">
                             <stat.icon className="w-24 h-24 text-slate-900" />
                         </div>
                         <div className="flex items-center justify-between mb-4 relative z-10">
@@ -96,6 +115,7 @@ export default function Dashboard() {
                 ))}
             </div>
 
+            {/* Charts Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 {/* Crop-wise infection Chart */}
@@ -169,37 +189,6 @@ export default function Dashboard() {
                         ))}
                     </div>
                 </div>
-                {/* Yield Loss Line Chart */}
-                <div className="lg:col-span-full glass-card p-6 border-slate-200 bg-white mt-6">
-                    <h3 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-blue-500" />
-                        Average Yield Loss Estimates (Over Time)
-                    </h3>
-                    <div className="h-[300px] w-full">
-                        {stats?.averageYieldLossOverTime?.length > 0 ? (
-                            <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={stats.averageYieldLossOverTime} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                                    <XAxis dataKey="date" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false}
-                                        tickFormatter={(val) => new Date(val).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                                    />
-                                    <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${val}%`} />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', color: '#0f172a', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                        labelFormatter={(label) => `Date: ${label}`}
-                                        formatter={(val) => [`${val}%`, 'Avg Yield Loss']}
-                                    />
-                                    <Line type="monotone" dataKey="avgLoss" stroke="#3b82f6" strokeWidth={3} dot={{ fill: '#3b82f6', r: 4 }} activeDot={{ r: 6, fill: '#60a5fa' }} />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <div className="h-full flex items-center justify-center text-slate-500 border border-slate-200 bg-slate-50 rounded-xl">
-                                No yield loss data to display yet. Upload more scans to generate trends.
-                            </div>
-                        )}
-                    </div>
-                </div>
-
             </div>
         </div>
     );

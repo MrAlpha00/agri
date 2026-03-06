@@ -2,7 +2,7 @@
 
 import { useChat } from 'ai/react';
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Bot, User, Minimize2, Maximize2 } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User, Minimize2, Maximize2, Leaf } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function FarmerAssistant() {
