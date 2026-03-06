@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TrendingUp, Scale, Thermometer, Droplets, MapPin, Calculator, Beaker, CheckCircle } from "lucide-react";
+import { TrendingUp, Scale, Thermometer, Droplets, MapPin, Calculator, Beaker, CheckCircle, Leaf, AlertTriangle } from "lucide-react";
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, Cell } from "recharts";
 
 interface PredictionResult {
