@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-100: #ecfdf5;
-  --color-brand-200: #d1fae5;
-  --color-brand-300: #a7f3d0;
-  --color-brand-400: #6ee7b7;
-  --color-brand-500: #34d399;
-  /* emerald-400 */
-  --color-brand-600: #10b981;
-  /* emerald-500 */
-  --color-brand-700: #059669;
-  /* emerald-600 */
-  --color-brand-800: #047857;
-  --color-brand-900: #065f46;
+  --color-brand-100: #dcfce7;
+  --color-brand-200: #bbf7d0;
+  --color-brand-300: #86efac;
+  --color-brand-400: #4ade80;
+  /* Accent */
+  --color-brand-500: #22c55e;
+  /* Secondary */
+  --color-brand-600: #16a34a;
+  /* Primary */
+  --color-brand-700: #15803d;
+  --color-brand-800: #166534;
+  --color-brand-900: #14532d;
 
   --color-dark-50: #1c1c1e;
   --color-dark-100: #121212;
@@ -53,19 +53,19 @@
     --card-foreground: #0f172a;
     --popover: #ffffff;
     --popover-foreground: #0f172a;
-    --primary: #10b981;
+    --primary: #16a34a;
     --primary-foreground: #ffffff;
-    --secondary: #f1f5f9;
-    --secondary-foreground: #0f172a;
+    --secondary: #22c55e;
+    --secondary-foreground: #ffffff;
     --muted: #f1f5f9;
     --muted-foreground: #64748b;
-    --accent: #10b981;
-    --accent-foreground: #ffffff;
+    --accent: #4ade80;
+    --accent-foreground: #0f172a;
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
     --border: #e2e8f0;
     --input: #e2e8f0;
-    --ring: #10b981;
+    --ring: #16a34a;
     --radius: 0.75rem;
   }
 }
@@ -88,9 +88,9 @@
 
 .glass-card {
   @apply bg-white/90 backdrop-blur-lg border border-brand-100/50 rounded-2xl transition-all duration-300;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
 }
 
 .glass-card:hover {
-  box-shadow: 0 8px 30px rgba(16, 185, 129, 0.12);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
 }
