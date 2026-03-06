@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Leaf, LayoutDashboard, UploadCloud, Database, Settings, LogOut, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Leaf, LayoutDashboard, UploadCloud, Database, Settings, LogOut, ChevronLeft, ChevronRight, X, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 
 const navItems = [
     { name: "Upload", href: "/", icon: UploadCloud },
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Yield Predictor", href: "/yield", icon: TrendingUp },
     { name: "Dataset", href: "/dataset", icon: Database },
     { name: "Settings", href: "/settings", icon: Settings },
 ];
