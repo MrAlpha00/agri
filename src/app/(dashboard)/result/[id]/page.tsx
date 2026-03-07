@@ -23,8 +23,10 @@ export default function ResultPage({ params }: ResultPageProps) {
                 const { data, error } = await supabase
                     .from('predictions')
                     .select('*')
-                    .eq('prediction_id', id)
+                    .eq('id', id)
                     .single();
+
+                console.log("Supabase response:", { data, error });
 
                 if (error || !data) {
                     console.error("Error fetching prediction:", error);
