@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import * as tf from '@tensorflow/tfjs';
-import { Jimp } from 'jimp';
+import sharp from 'sharp';
 
 const CLASSES = [
     { name: 'Rice Blast', severity: 'High' },
@@ -34,26 +34,31 @@ async function predictDisease(imageUrl: string, requestedCrop: string) {
     console.log(`[TFJS Inference] Processing uploaded image from Supabase Storage: ${imageUrl}`);
 
     try {
-        // 1. Download and decode image using Jimp
-        // We use Jimp because native canvas bindings fail in some serverless environments
-        const image = await Jimp.read(imageUrl);
-        image.resize({ w: 224, h: 224 }); // MobileNet expects 224x224
+        // 1. Download image
+        const response = await fetch(imageUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch image: ${response.statusText}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
 
-        // 2. Preprocess image into a tensor
-        // Create an array of shape [1, 224, 224, 3]
-        const numChannels = 3;
+        // 2. Process image with sharp (handles WebP, JPEG, PNG, etc.)
         const width = 224;
         const height = 224;
-        const values = new Float32Array(width * height * numChannels);
+        const numChannels = 3; // MobileNet expects RGB
 
-        let i = 0;
-        image.scan(0, 0, width, height, (x: number, y: number, idx: number) => {
+        const processedBuffer = await sharp(buffer)
+            .resize(width, height)
+            .removeAlpha() // Ensure we only have RGB channels, removing any transparency
+            .raw()
+            .toBuffer();
+
+        // 3. Preprocess image buffer into a Float32Array tensor
+        const values = new Float32Array(width * height * numChannels);
+        for (let i = 0; i < processedBuffer.length; i++) {
             // Normalize pixels to [0, 1] for MobileNet
-            values[i * 3 + 0] = image.bitmap.data[idx + 0] / 255.0;     // R
-            values[i * 3 + 1] = image.bitmap.data[idx + 1] / 255.0;     // G
-            values[i * 3 + 2] = image.bitmap.data[idx + 2] / 255.0;     // B
-            i++;
-        });
+            values[i] = processedBuffer[i] / 255.0;
+        }
 
         const imageTensor = tf.tensor4d(values, [1, height, width, numChannels]);
 
