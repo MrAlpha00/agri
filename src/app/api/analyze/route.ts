@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import * as tf from '@tensorflow/tfjs';
+import { Jimp } from 'jimp';
 
 const CLASSES = [
     { name: 'Rice Blast', severity: 'High' },
@@ -33,11 +34,6 @@ async function predictDisease(imageUrl: string, requestedCrop: string) {
     console.log(`[TFJS Inference] Processing uploaded image from Supabase Storage: ${imageUrl}`);
 
     try {
-        // Instead of importing jimp at the top and bloating the cold start, we import it inside
-        // the function only when needed. Note: assuming it's CommonJS or default export compatible.
-        const jimpLoader = await import('jimp');
-        const Jimp = jimpLoader.default || jimpLoader.Jimp || jimpLoader; // Dynamic handling of Jimp module format
-
         // 1. Download and decode image using Jimp
         // We use Jimp because native canvas bindings fail in some serverless environments
         const image = await Jimp.read(imageUrl);
