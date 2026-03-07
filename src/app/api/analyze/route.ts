@@ -2,82 +2,108 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import * as tf from '@tensorflow/tfjs';
 
-// Predefined set of diseases for local model identification
-const DISEASES = [
-    { name: 'Early Blight', severity: 'High' },
-    { name: 'Late Blight', severity: 'High' },
-    { name: 'Leaf Rust', severity: 'Medium' },
-    { name: 'Healthy', severity: 'None' },
-    { name: 'Powdery Mildew', severity: 'Medium' }
+const CLASSES = [
+    { name: 'Rice Blast', severity: 'High' },
+    { name: 'Brown Spot', severity: 'Medium' },
+    { name: 'Bacterial Leaf Blight', severity: 'High' },
+    { name: 'Tungro', severity: 'High' },
+    { name: 'Healthy', severity: 'None' }
 ];
 
+let cachedModel: tf.LayersModel | null = null;
+async function getModel() {
+    if (!cachedModel) {
+        // Construct the absolute URL based on the Vercel request or standard local hostname
+        const baseUrl = process.env.VERCEL_URL
+            ? `https://${process.env.VERCEL_URL}`
+            : 'http://localhost:3000';
+        const modelUrl = `${baseUrl}/model/model.json`;
+        console.log("Loading MobileNet transfer model from", modelUrl);
+        cachedModel = await tf.loadLayersModel(modelUrl);
+    }
+    return cachedModel;
+}
+
 /**
- * Local prediction function using TensorFlow.js
- * In a production Vercel environment without a GPU, we use a lightweight
- * compiled Sequential model architecture to classify the crop disease.
+ * Local prediction function using TensorFlow.js and Jimp.
  */
 async function predictDisease(imageUrl: string, requestedCrop: string) {
-    // 1. Ensure TensorFlow backend is ready
     await tf.ready();
-
     let crop = requestedCrop || 'Unknown Crop';
-
     console.log(`[TFJS Inference] Processing uploaded image from Supabase Storage: ${imageUrl}`);
 
-    // 2. Define a local Neural Network model architecture for classification
-    // This replaces external API calls with local, in-memory processing.
-    const model = tf.sequential();
-    model.add(tf.layers.flatten({ inputShape: [224, 224, 3] }));
-    model.add(tf.layers.dense({ units: 64, activation: 'relu' }));
-    model.add(tf.layers.dense({ units: 32, activation: 'relu' }));
-    model.add(tf.layers.dense({ units: DISEASES.length, activation: 'softmax' })); // Output layer matches disease classes
+    try {
+        // Instead of importing jimp at the top and bloating the cold start, we import it inside
+        // the function only when needed. Note: assuming it's CommonJS or default export compatible.
+        const jimpLoader = await import('jimp');
+        const Jimp = jimpLoader.default || jimpLoader.Jimp || jimpLoader; // Dynamic handling of Jimp module format
 
-    // 3. Instead of parsing the raw JPG buffer in Node.js (which requires heavy native canvas deps),
-    // we simulate the tensor extraction for the Vercel serverless environment.
-    // We generate a deterministic pseudo-random tensor based on the image URL length
-    // to ensure the same image gets the same "prediction" locally.
-    const urlHash = imageUrl.split('').reduce((a, b) => {
-        a = ((a << 5) - a) + b.charCodeAt(0);
-        return a & a;
-    }, 0);
+        // 1. Download and decode image using Jimp
+        // We use Jimp because native canvas bindings fail in some serverless environments
+        const image = await Jimp.read(imageUrl);
+        image.resize(224, 224); // MobileNet expects 224x224
 
-    // Seed the raw image tensor (simulated 224x224 RGB image)
-    const rawTensorValue = Math.abs(urlHash % 255) / 255.0;
-    const imageTensor = tf.fill([1, 224, 224, 3], rawTensorValue);
+        // 2. Preprocess image into a tensor
+        // Create an array of shape [1, 224, 224, 3]
+        const numChannels = 3;
+        const width = 224;
+        const height = 224;
+        const values = new Float32Array(width * height * numChannels);
 
-    // 4. Execute the TensorFlow model prediction
-    const predictionTensor = model.predict(imageTensor) as tf.Tensor;
+        let i = 0;
+        image.scan(0, 0, width, height, (x: number, y: number, idx: number) => {
+            // Normalize pixels to [0, 1] for MobileNet
+            values[i * 3 + 0] = image.bitmap.data[idx + 0] / 255.0;     // R
+            values[i * 3 + 1] = image.bitmap.data[idx + 1] / 255.0;     // G
+            values[i * 3 + 2] = image.bitmap.data[idx + 2] / 255.0;     // B
+            i++;
+        });
 
-    // 5. Extract classification logits
-    const probabilities = await predictionTensor.data();
+        const imageTensor = tf.tensor4d(values, [1, height, width, numChannels]);
 
-    // Memory cleanup
-    imageTensor.dispose();
-    predictionTensor.dispose();
+        // 3. Load Model and Predict
+        const model = await getModel();
+        const predictionTensor = model.predict(imageTensor) as tf.Tensor;
+        const probabilities = await predictionTensor.data();
 
-    // 6. Find the highest confidence class
-    let maxIdx = 0;
-    let maxProb = probabilities[0];
-    for (let i = 1; i < probabilities.length; i++) {
-        if (probabilities[i] > maxProb) {
-            maxProb = probabilities[i];
-            maxIdx = i;
+        // Memory cleanup
+        imageTensor.dispose();
+        predictionTensor.dispose();
+
+        // 4. Find the highest confidence class
+        let maxIdx = 0;
+        let maxProb = probabilities[0];
+        for (let i = 1; i < probabilities.length; i++) {
+            if (probabilities[i] > maxProb) {
+                maxProb = probabilities[i];
+                maxIdx = i;
+            }
         }
+
+        const confidence = Number(maxProb.toFixed(4));
+        const selectedDisease = CLASSES[maxIdx];
+
+        // 5. Apply the 75% Confidence Threshold constraint
+        if (confidence < 0.75) {
+            return {
+                crop,
+                disease: "Model uncertain. Please upload a clearer image.",
+                confidence,
+                severity: "None"
+            };
+        }
+
+        return {
+            crop,
+            disease: selectedDisease.name,
+            confidence,
+            severity: selectedDisease.severity
+        };
+    } catch (err: any) {
+        console.error("Prediction preprocessing or execution failed:", err.message);
+        // Fallback or re-throw
+        throw new Error("Unable to run model analysis on the provided image");
     }
-
-    // Apply some realistic scaling to the confidence score (neural nets often output extreme values)
-    const confidence = Number((0.75 + (maxProb * 0.20)).toFixed(4));
-
-    // Because the untrained dense layer will essentially pick somewhat randomly (based on the input fill),
-    // we map the argmax to our disease array.
-    const selectedDisease = DISEASES[maxIdx];
-
-    return {
-        crop,
-        disease: selectedDisease.name,
-        confidence,
-        severity: selectedDisease.severity
-    };
 }
 
 export async function POST(request: Request) {

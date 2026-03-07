@@ -67,6 +67,26 @@ export default function ResultPage({ params }: ResultPageProps) {
         );
     }
 
+    const isUncertain = result.disease === "Model uncertain. Please upload a clearer image.";
+
+    if (isUncertain) {
+        return (
+            <div className="max-w-6xl mx-auto py-32 flex flex-col items-center justify-center">
+                <AlertTriangle className="w-16 h-16 text-amber-500 mb-6" />
+                <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">Analysis Uncertain</h1>
+                <p className="text-slate-500 mb-8 text-center max-w-md">Our AI model confidence was below the 75% threshold. Please upload a clearer, well-lit image of the affected plant area.</p>
+                <div className="flex gap-4">
+                    <Link href="/dashboard" className="px-6 py-3 bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 rounded-xl font-medium transition-colors">
+                        Return to Dashboard
+                    </Link>
+                    <Link href="/upload" className="px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white rounded-xl font-medium shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 transform">
+                        Try Another Scan
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
     const recommendations = getRecommendations(result.crop, result.disease, result.severity);
     const confidencePercentage = (result.confidence * 100).toFixed(1);
 
