@@ -37,7 +37,7 @@ async function predictDisease(imageUrl: string, requestedCrop: string) {
         // 1. Download and decode image using Jimp
         // We use Jimp because native canvas bindings fail in some serverless environments
         const image = await Jimp.read(imageUrl);
-        image.resize(224, 224); // MobileNet expects 224x224
+        image.resize({ w: 224, h: 224 }); // MobileNet expects 224x224
 
         // 2. Preprocess image into a tensor
         // Create an array of shape [1, 224, 224, 3]
