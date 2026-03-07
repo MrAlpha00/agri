@@ -54,13 +54,11 @@ async function predictDisease(imageUrl: string, requestedCrop: string) {
             .toBuffer();
 
         // 3. Preprocess image buffer into a Float32Array tensor
-        const values = new Float32Array(width * height * numChannels);
-        for (let i = 0; i < processedBuffer.length; i++) {
-            // Normalize pixels to [0, 1] for MobileNet
-            values[i] = processedBuffer[i] / 255.0;
-        }
-
-        const imageTensor = tf.tensor4d(values, [1, height, width, numChannels]);
+        const tensor = tf.tensor3d(
+            new Uint8Array(processedBuffer),
+            [height, width, numChannels]
+        );
+        const imageTensor = tensor.div(255.0).expandDims();
 
         // 3. Load Model and Predict
         const model = await getModel();
