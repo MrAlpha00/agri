@@ -32,15 +32,8 @@ export function getRecommendations(
     }
 
     // Base mock logic parameterized by severity
-    const yieldLoss =
-        severity === "High" ? "20-40%" :
-            severity === "Medium" ? "5-15%" :
-                "0-5%";
-
-    const isBlight = disease.toLowerCase().includes("blight");
-    const isRust = disease.toLowerCase().includes("rust");
-    const isMildew = disease.toLowerCase().includes("mildew");
-    const isSpot = disease.toLowerCase().includes("spot");
+    let yieldLoss = severity === "High" ? "20-40%" : severity === "Medium" ? "5-15%" : "0-5%";
+    const diseaseNameLower = disease.toLowerCase();
 
     let symptoms = `Typical symptoms of ${disease} on ${crop} include discoloration, lesions, or unusual growth patterns.`;
     let recommendedPesticide = `Broad-spectrum fungicide suitable for ${crop}`;
@@ -55,55 +48,67 @@ export function getRecommendations(
         "Clean garden tools after use."
     ];
 
-    if (isBlight) {
-        symptoms = `Dark, concentric rings or water-soaked lesions on the lower leaves of the ${crop}, eventually causing leaves to yellow and drop.`;
-        recommendedPesticide = `Chlorothalonil, Mancozeb, or Copper-based fungicides`;
+    if (diseaseNameLower.includes("blast")) {
+        yieldLoss = severity === "High" ? "30-50%" : severity === "Medium" ? "10-25%" : "5-10%";
+        symptoms = `Diamond-shaped lesions on leaves with gray or white centers and brown margins. Affects leaves, nodes, and panicles.`;
+        recommendedPesticide = `Tricyclazole or Propiconazole-based fungicides`;
         treatmentSteps = [
-            "Remove and destroy heavily blighted leaves immediately.",
-            `Apply ${recommendedPesticide} at the first sign of disease.`,
-            "Spray every 7-10 days depending on weather (shorter intervals in wet conditions).",
-            "Ensure thorough coverage of both upper and lower leaf surfaces."
+            "Apply fungicides immediately upon seeing blast lesions.",
+            "Avoid excessive nitrogen application which encourages blast.",
+            "Maintain proper water levels in the field."
         ];
         preventionTips = [
-            "Water early in the day at the base of the plant.",
-            "Apply mulch to prevent soil splashing onto leaves.",
-            "Rotate crops and do not plant related crops in the same area for 3-4 years."
+            "Plant resistant rice varieties.",
+            "Use split application of nitrogen fertilizer.",
+            "Destroy infected seeds and stubble from previous crops."
         ];
-    } else if (isRust) {
-        symptoms = `Small, raised, orange, rust-colored, or brown pustules on the undersides of the ${crop} leaves.`;
-        recommendedPesticide = `Myclobutanil, Propiconazole, or Sulfur-based sprays`;
+    } else if (diseaseNameLower.includes("brown_spot")) {
+        yieldLoss = severity === "High" ? "15-30%" : severity === "Medium" ? "5-15%" : "0-5%";
+        symptoms = `Small, circular to oval, dark brown spots on the leaves. Severe infection causes leaves to dry out completely.`;
+        recommendedPesticide = `Mancozeb or Edifenphos fungicides`;
         treatmentSteps = [
-            "Prune affected leaves to stop the spread of spores.",
-            `Apply a systemic fungicide like ${recommendedPesticide}.`,
-            "Rake up and dispose of infected fallen leaves."
-        ];
-    } else if (isMildew) {
-        symptoms = `White, powdery fungal growth on the upper surfaces of the ${crop} leaves, often causing leaves to distort or curl.`;
-        recommendedPesticide = `Potassium Bicarbonate, Neem Oil, or Sulfur fungicides`;
-        treatmentSteps = [
-            "Prune heavily infected parts to improve airflow.",
-            `Thoroughly spray the plant with ${recommendedPesticide}.`,
-            "Repeat treatment every 7-14 days until symptoms subside."
+            "Improve soil fertility by applying necessary nutrients (potassium, calcium).",
+            `Apply ${recommendedPesticide} at tillering or booting stages.`
         ];
         preventionTips = [
-            "Plant in areas with full, direct sunlight.",
-            "Avoid excess nitrogen fertilizer, which encourages lush, susceptible growth.",
-            "Consider planting mildew-resistant varieties."
+            "Ensure seeds are healthy and treated before planting.",
+            "Maintain good soil fertility with balanced NPK fertilizers.",
+            "Manage field watering properly."
         ];
-    } else if (isSpot) {
-        symptoms = `Small, circular, dark spots on the foliage, which may enlarge and form yellow halos.`;
-        recommendedPesticide = `Copper Fungicide or Bacillus subtilis (Organic)`;
+    } else if (diseaseNameLower.includes("bacterial_leaf_blight") || diseaseNameLower.includes("blight")) {
+        yieldLoss = severity === "High" ? "40-60%" : severity === "Medium" ? "20-30%" : "5-10%";
+        symptoms = `Water-soaked to yellowish stripes on leaf blades or starting at leaf tips followed by grayish centers. Leaves turn pale green to greyish white and eventually wither.`;
+        recommendedPesticide = `Copper-based bactericides (though prevention is most effective)`;
         treatmentSteps = [
-            "Remove diseased leaves carefully to avoid shaking spores.",
-            `Treat with ${recommendedPesticide}.`
+            "Drain the field temporarily if severe.",
+            "Limit nitrogen fertilizer immediately.",
+            "Remove weeds indicating alternate hosts."
+        ];
+        preventionTips = [
+            "Use resistant varieties of rice.",
+            "Ensure balanced fertilization and avoid excessive nitrogen.",
+            "Maintain clean fields and sterile equipment."
+        ];
+    } else if (diseaseNameLower.includes("tungro")) {
+        yieldLoss = severity === "High" ? "50-80%" : severity === "Medium" ? "20-40%" : "5-15%";
+        symptoms = `Severe stunting of the plant and distinct yellow or orange-yellow discoloration of the leaves. Often spread by green leafhoppers.`;
+        recommendedPesticide = `Insecticides targeting green leafhoppers (Neonicotinoids, Buprofezin)`;
+        treatmentSteps = [
+            "Apply insecticide immediately to control the green leafhopper vector population.",
+            "Uproot and bury deeply existing infected plants."
+        ];
+        preventionTips = [
+            "Plant tungro-resistant varieties.",
+            "Time planting to avoid peak leafhopper populations.",
+            "Observe fallow periods between plantings to break the insect cycle."
         ];
     }
 
     // Adjust aggressiveness based on severity
     if (severity === "High") {
-        treatmentSteps.unshift(`URGENT: Immediately cull parts of the ${crop} that are heavily diseased to save the rest of the crop.`);
-        if (!treatmentSteps.join(" ").includes("Chemical")) {
-            treatmentSteps.push("Consider strong chemical intervention if organic methods fail to halt the rapid spread.");
+        treatmentSteps.unshift(`URGENT: Immediately assess the entire field for rapid spread of ${disease}.`);
+        if (!treatmentSteps.join(" ").includes("Chemical") && !diseaseNameLower.includes("tungro") && !diseaseNameLower.includes("blight")) {
+            treatmentSteps.push("Consider strong chemical intervention if cultural methods fail to halt the rapid spread.");
         }
     }
 
